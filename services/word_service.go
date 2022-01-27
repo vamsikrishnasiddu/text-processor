@@ -18,6 +18,19 @@ type wordServiceInterface interface {
 	ProcessWordOccurence(text string) (models.WordPairList, rest_errors.RestErr)
 }
 
+func reverse(q models.WordPairList) models.WordPairList {
+
+	start := 0
+	end := len(q) - 1
+	for start <= end {
+		q[start], q[end] = q[end], q[start]
+		start++
+		end--
+	}
+
+	return q
+}
+
 // ProcessWordOccurence takes the text and Creates the Word pairs with their occurences.
 // if no error it returns the list of wordPairs sorted on basis of highest repeated word.
 func (w *wordService) ProcessWordOccurence(text string) (models.WordPairList, rest_errors.RestErr) {
@@ -43,10 +56,12 @@ func (w *wordService) ProcessWordOccurence(text string) (models.WordPairList, re
 
 	// appending the top 10 most used word pairs into a new wordPairlist
 	for i := 0; i < len(p); i++ {
-		if i < len(p) && i < 10 {
+		if i < len(p) && i < 20 {
 			q = append(q, p[i])
 		}
 	}
 
-	return q, nil
+	l := reverse(q)
+
+	return l, nil
 }
